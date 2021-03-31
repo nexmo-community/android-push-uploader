@@ -1,4 +1,4 @@
-# android Push Notification Certificate Uploader
+# Android Push Notification Certificate Uploader
 
 <img src="https://developer.nexmo.com/assets/images/Vonage_Nexmo.svg" height="48px" alt="Nexmo is now known as Vonage" />
 
