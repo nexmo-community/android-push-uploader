@@ -1,7 +1,7 @@
 {
-  "name": "Vonage iOS Push Notification Certificate Uploader",
+  "name": "Android Push Notification Certificate Uploader",
   "description": "an online alternative for uploading your push certificates to Vonage.",
-  "repository": "https://github.com/nexmo-community/ios-push-uploader",
+  "repository": "https://github.com/nexmo-community/android-push-uploader",
   "logo": "https://developer.nexmo.com/assets/images/Vonage_Nexmo.svg",
   "keywords": ["node", "express"],
   "image": "heroku/nodejs"

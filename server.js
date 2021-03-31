@@ -54,7 +54,7 @@ async function processFiles(files, appId) {
   return new Promise((resolve, reject) => {
     const options = {
       hostname: "api.nexmo.com",
-      path: `/v1/applications/${appId}/push_tokens/ios`,
+      path: `/v1/applications/${appId}/push_tokens/android`,
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

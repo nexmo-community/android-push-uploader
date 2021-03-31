@@ -1,5 +1,5 @@
 {
-  "name": "ios-push-uploader",
+  "name": "android-push-uploader",
   "version": "0.0.1",
   "description": "A simple Node app built on Express, instantly up and running.",
   "main": "server.js",
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/nexmo-community/ios-push-uploader"
+    "url": "https://github.com/nexmo-community/android-push-uploader"
   },
   "license": "MIT",
   "keywords": [
