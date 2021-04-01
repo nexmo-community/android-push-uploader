@@ -60,18 +60,12 @@ async function linkServices(privateKey, appId, firebaseProjectId, firebaseToken)
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + getJwt(appId, privateKey)
-      },
-      body: JSON.stringify({
-          projectId: firebaseProjectId,
-          token: firebaseToken
-      })
+      }
     };
 
     const postData = JSON.stringify({
-      token: privateKey
-        .toString("hex")
-        .match(/../g)
-        .join("")
+      token: firebaseToken,
+      projectId: firebaseProjectId
     });
 
     const req = https.request(options, res => {
