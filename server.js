@@ -3,6 +3,8 @@ const Busboy = require("busboy");
 const Vonage = require("nexmo");
 const https = require("https");
 
+const PORT = '3200';
+
 const app = express();
 app.use(express.json());
 app.use(express.static("public"));
@@ -91,8 +93,8 @@ async function processFiles(files, appId) {
   });
 }
 
-const listener = app.listen(process.env.PORT, () => {
-  console.log("Your app is listening on port " + listener.address().port);
+const listener = app.listen(PORT, () => {
+  console.log("App available at: http://localhost:" + listener.address().port + "/");
 });
 
 function getJwt(appId, privateKeyBuffer) {
