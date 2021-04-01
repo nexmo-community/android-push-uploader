@@ -16,9 +16,9 @@ app.get("/", (request, response) => {
 app.post("/upload", (request, response) => {
   const busboy = new Busboy({ headers: request.headers });
 
-  var formData = new Map();
+  var formParameters = new Map();
   busboy.on('field', function(fieldname, val) {
-    formData.set(fieldname, val);
+    formParameters.set(fieldname, val);
   });
 
   var formFiles = new Map();
@@ -29,13 +29,13 @@ app.post("/upload", (request, response) => {
   });
 
   busboy.on("finish", async function() {
-    // console.log(formData)
+    // console.log(formParameters)
     console.log("finish")
     console.log()
 
-    var appId = formData.get('appid');
-    var firebaseProjectId = formData.get("firebaseprojectid");
-    var firebaseToken = formData.get("firebasetoken");
+    var appId = formParameters.get('appid');
+    var firebaseProjectId = formParameters.get("firebaseprojectid");
+    var firebaseToken = formParameters.get("firebasetoken");
     var privateKey = formFiles.get("privatekey").toString();
 
     console.log("privateKey: " + privateKey)
