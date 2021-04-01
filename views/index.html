@@ -26,8 +26,13 @@
     </label>
     <br />
     <label>
-      certificate (.p12)
-      <input name="certificate" type="file" accept=".p12" required />
+      Frebase project ID
+      <input name="firebaseprojectid" type="text" required  size="45" />
+    </label>
+    <br />
+    <label>
+      Frebase token
+      <input name="firebasetoken" type="text" required  size="45" />
     </label>
     <br />
     <button type="submit" id="submit-dream">Upload</button>
@@ -45,10 +50,12 @@
   const certFileField = document.querySelector('input[name="certificate"]');
 
   async function uploadData(url = '') {
-    // add application id and files to form
+    // add input values and key file to the form
     formData.append('appid', uploadForm.elements.appid.value);
     formData.append('privatekey', privateKeyFileField.files[0]);
-    formData.append('certificate', certFileField.files[0]);
+    formData.append('firebaseprojectid', uploadForm.elements.firebaseprojectid.value);
+    formData.append('firebasetoken', uploadForm.elements.firebasetoken.value);
+
     try {
       const response = await fetch(url, {
         method: 'POST',

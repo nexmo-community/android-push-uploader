@@ -16,16 +16,11 @@ app.get("/", (request, response) => {
 app.post("/upload", (request, response) => {
   const busboy = new Busboy({ headers: request.headers });
   const files = [];
-  const buffers = {};
-  var appId;
+  const buffers = {};  
 
-  busboy.on("field", function(
-    fieldname,
-    val,
-    fieldnameTruncated,
-    valTruncated
-  ) {
-    appId = val;
+  var formData = new Map();
+  busboy.on('field', function(fieldname, val) {
+    formData.set(fieldname, val);
   });
 
   busboy.on("file", function(fieldname, file, filename, encoding, mimetype) {
@@ -45,14 +40,21 @@ app.post("/upload", (request, response) => {
   });
 
   busboy.on("finish", async function() {
-    const processResponse = await processFiles(files, appId);
-    response.status(200).send(processResponse);
+    console.log(formData)
+
+    var appId = formData.get('appid');
+    var firebaseProjectId = formData.get('firebaseprojectid');
+    var firebaseToken = formData.get('firebasetoken');
+
+    const linkServicesResponse = await linkServices(files, appId, firebaseProjectId, firebaseToken);
+    response.status(200).send(linkServicesResponse);
   });
 
   return request.pipe(busboy);
 });
 
-async function processFiles(files, appId) {
+// Link the Vonage backend push service with the Firebase application
+async function linkServices(files, appId, firebaseProjectId, firebaseToken) {
   return new Promise((resolve, reject) => {
     const options = {
       hostname: "api.nexmo.com",
@@ -61,7 +63,11 @@ async function processFiles(files, appId) {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + getJwt(appId, files[0].fileBuffer)
-      }
+      },
+      body: JSON.stringify({
+          projectId: firebaseProjectId,
+          token: firebaseToken
+      })
     };
 
     const postData = JSON.stringify({
