@@ -15,38 +15,35 @@ app.get("/", (request, response) => {
 
 app.post("/upload", (request, response) => {
   const busboy = new Busboy({ headers: request.headers });
-  const files = [];
-  const buffers = {};  
 
   var formData = new Map();
   busboy.on('field', function(fieldname, val) {
     formData.set(fieldname, val);
   });
 
+  var formFiles = new Map();
   busboy.on("file", function(fieldname, file, filename, encoding, mimetype) {
-    buffers[fieldname] = [];
     file.on("data", data => {
-      buffers[fieldname].push(data);
-    });
-
-    file.on("end", () => {
-      files.push({
-        fileBuffer: Buffer.concat(buffers[fieldname]),
-        fileType: mimetype,
-        fileName: filename,
-        fileEnc: encoding
-      });
+      formFiles.set(fieldname, data);
     });
   });
 
   busboy.on("finish", async function() {
-    console.log(formData)
+    // console.log(formData)
+    console.log("finish")
+    console.log()
 
     var appId = formData.get('appid');
-    var firebaseProjectId = formData.get('firebaseprojectid');
-    var firebaseToken = formData.get('firebasetoken');
+    var firebaseProjectId = formData.get("firebaseprojectid");
+    var firebaseToken = formData.get("firebasetoken");
+    var privateKey = formFiles.get("privatekey").toString();
 
-    const linkServicesResponse = await linkServices(files, appId, firebaseProjectId, firebaseToken);
+    console.log("privateKey: " + privateKey)
+    console.log("appId: " + appId)
+    console.log("firebaseToken: " + firebaseToken)
+    console.log("firebaseProjectId: " + firebaseProjectId)
+
+    const linkServicesResponse = await linkServices(privateKey, appId, firebaseProjectId, firebaseToken);
     response.status(200).send(linkServicesResponse);
   });
 
@@ -54,7 +51,7 @@ app.post("/upload", (request, response) => {
 });
 
 // Link the Vonage backend push service with the Firebase application
-async function linkServices(files, appId, firebaseProjectId, firebaseToken) {
+async function linkServices(privateKey, appId, firebaseProjectId, firebaseToken) {
   return new Promise((resolve, reject) => {
     const options = {
       hostname: "api.nexmo.com",
@@ -62,7 +59,7 @@ async function linkServices(files, appId, firebaseProjectId, firebaseToken) {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + getJwt(appId, files[0].fileBuffer)
+        Authorization: "Bearer " + getJwt(appId, privateKey)
       },
       body: JSON.stringify({
           projectId: firebaseProjectId,
@@ -71,7 +68,7 @@ async function linkServices(files, appId, firebaseProjectId, firebaseToken) {
     };
 
     const postData = JSON.stringify({
-      token: files[1].fileBuffer
+      token: privateKey
         .toString("hex")
         .match(/../g)
         .join("")
@@ -103,11 +100,11 @@ const listener = app.listen(PORT, () => {
   console.log("App available at: http://localhost:" + listener.address().port + "/");
 });
 
-function getJwt(appId, privateKeyBuffer) {
+function getJwt(appId, privateKey) {
   const vonage = new Vonage(
     {
       applicationId: appId,
-      privateKey: privateKeyBuffer
+      privateKey: privateKey
     },
     { debug: true }
   );
